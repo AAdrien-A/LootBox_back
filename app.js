@@ -7,13 +7,26 @@ var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 var session = require('express-session');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var moment = require('moment');
+var LocalStrategy = require('passport-local').Strategy;
 var MongoStore = require('connect-mongo')(session);
+
+var User = require('./models/User.js');
 
 //Routes App
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+io.on('connection', socket => {
+    socket.on('new-message', message => socket.broadcast.emit('show-message', message));
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,6 +50,21 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+//Passport authentification
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Middleware
+app.use((req, res, next) => {
+    res.locals.user = req.user;
+    moment.locale('fr');
+    res.locals.moment = moment;
+    next();
+});
 
 
 app.use('/', indexRouter);
