@@ -10,4 +10,4 @@ var ForumPostSchema = new Schema({
     content: {type: String, required: true}
 });
 
-module.exports = mongoose.model('Message', ForumPostSchema);
+module.exports = mongoose.model('ForumPost', ForumPostSchema);

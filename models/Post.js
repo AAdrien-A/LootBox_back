@@ -11,4 +11,4 @@ var PostSchema = new Schema({
     price: {type: Number, required: true}
 });
 
-module.exports = mongoose.model('Message', PostSchema);
+module.exports = mongoose.model('Post', PostSchema);
