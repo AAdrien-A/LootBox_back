@@ -5,12 +5,12 @@ var MessageSchema = new Schema({
     content: {type: String, required: true},
     seen: {type: Boolean, required: true},
     sender: {
-        type: MessageSchema.Types.ObjectID,
-        ref: 'username'
+        type: Schema.Types.ObjectID,
+        ref: 'User'
     },
     recipient: {
-        type: MessageSchema.Types.ObjectID,
-        ref: 'username'
+        type: Schema.Types.ObjectID,
+        ref: 'User'
     },
     timestamps: true
 });

@@ -27,26 +27,26 @@ router.post('/', (req, res) => {
 });
 
 /* Updating Posts */
-router.patch('/:id', getPost, async (req, res) => {
-    if (req.body.title != null) {
-        res.post.title= req.body.title
-    }
-    try {
-        const updatedPost = await res.post.save();
-        res.json(updatedPost)
-    } catch (err) {
-        res.status(400).json({ message: err.message })
-    }
-});
+// router.patch('/:id', getPost, async (req, res) => {
+//     if (req.body.title != null) {
+//         res.post.title= req.body.title
+//     }
+//     try {
+//         const updatedPost = await res.post.save();
+//         res.json(updatedPost)
+//     } catch (err) {
+//         res.status(400).json({ message: err.message })
+//     }
+// });
 
 /* Delete Post */
-router.delete('/:id', getPost, async (req, res) => {
-    try {
-        await res.post.remove();
-        res.json({message: 'Deleted Post'})
-    } catch (err) {
-        res.status(500).json({message: err.message})
-    }
-});
+// router.delete('/:id', getPost, async (req, res) => {
+//     try {
+//         await res.post.remove();
+//         res.json({message: 'Deleted Post'})
+//     } catch (err) {
+//         res.status(500).json({message: err.message})
+//     }
+// });
 
 module.exports = router;

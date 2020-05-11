@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var ForumPostSchema = new Schema({
-    username: {type: UserSchema.Types.ObjectId, ref:'username'},
+    user: {type: Schema.Types.ObjectId, ref:'User'},
     title: {type: String, required: true},
     tags: {type: String, required: true},
     plateform: {type: String},

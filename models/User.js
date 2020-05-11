@@ -15,6 +15,7 @@ var UserSchema = new Schema({
     img: {type: String},
     birthdate: {type: Date},
     phone: {type: String},
+    bio: {type: String},
 
     address: {type: String, required: true},
     city: {type: String, required: true},
