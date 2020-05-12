@@ -13,6 +13,7 @@ var PostSchema = new Schema({
         }
     },
     plateform: {type: String, required: true},
+    description: {type: String, required: true},
     productCondition: {type: String, required: true},
     price: {type: Number, required: true}
 });

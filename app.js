@@ -8,7 +8,6 @@ var sassMiddleware = require('node-sass-middleware');
 var session = require('express-session');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var jwt = require('jsonwebtoken');
 var moment = require('moment');
 var LocalStrategy = require('passport-local').Strategy;
 var MongoStore = require('connect-mongo')(session);
@@ -55,6 +54,9 @@ app.use(sassMiddleware({
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
+//router handler for images
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(session({
     store: new MongoStore({mongooseConnection: mongoose.connection}),
     secret: 'changethis',
