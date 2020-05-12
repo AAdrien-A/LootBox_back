@@ -1,7 +1,3 @@
-GET http://localhost:4000/test
-Authorization: Bearer a49cc8a54ec63e7a829107748e7952bdf33a6ba6536c5ca4e0987c2749e3cdfa988600b02f67952ad45c927903ab5a004f01f1d923537b2377fd01ee1d6a8a65
-
-###
 GET http://localhost:4000/posts
 
 ###
@@ -14,17 +10,8 @@ PUT http://localhost:4000/posts
 POST http://localhost:4000/login
 Content-Type: application/json
 
-{
-  "username": "Kyle"
-}
-
 ###
 POST http://localhost:4000/register
 Content-Type: application/json
-
-{
-  "username": "test",
-  "email": "test@test.com"
-}
 
 ###
