@@ -15,11 +15,11 @@ var MongoStore = require('connect-mongo')(session);
 
 var User = require('./models/User.js');
 
-//Routes App
+//routes App
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
-// var chatsRouter = require('./routes/chats'); TO DO: probleme sur le Shema.Type
+var chatsRouter = require('./routes/chats');
 var forumRouter = require('./routes/forum');
 
 var app = express();
@@ -31,6 +31,13 @@ io.on('connection', socket => {
     socket.on('new-message', message => socket.broadcast.emit('show-message', message));
 });
 
+// middleware all requests from all origins to access API.
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -55,50 +62,14 @@ app.use(session({
     saveUninitialized: false
 }));
 
-//Passport authentification
+//passport authentification
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// TEST TOKEN
-const test = [
-    {
-        username: 'Kyle',
-        title: 'Post 1'
-    },
-    {
-        username: 'Jim',
-        title: 'Post 2'
-    }
-];
-
-app.get('/test', authenticateToken, (req, res) => {
-    res.json(test.filter(test => test.username === req.user.name))
-});
-
-app.post('/login', (req, res) => {
-    const username = req.body.username;
-    const user = {name: username};
-
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-    res.json({accessToken: accessToken})
-});
-
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split('')[1];
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next()
-    })
-}
-
-// Middleware
+// middleware fuseaux horaires
 app.use((req, res, next) => {
     res.locals.user = req.user;
     moment.locale('fr');
@@ -106,11 +77,11 @@ app.use((req, res, next) => {
     next();
 });
 
-
+// used routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
-// app.use('/chats', chatsRouter);
+app.use('/chats', chatsRouter);
 app.use('/forum', forumRouter);
 
 // catch 404 and forward to error handler
@@ -128,7 +99,6 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-
 
 
 module.exports = app;

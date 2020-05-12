@@ -2,14 +2,14 @@ var express = require('express');
 var router = express.Router();
 var Post = require('../models/Post');
 
-/* GET Posts */
+ // GET posts
 router.get('/', function (req, res, next) {
     Post.find().exec((err, posts) => {
         res.json(posts)
     })
 });
 
-/* POST Posts */
+// POST posts
 router.post('/', (req, res) => {
     const post = new Post({
         title: req.body.title,
@@ -26,27 +26,49 @@ router.post('/', (req, res) => {
     });
 });
 
-/* Updating Posts */
-// router.patch('/:id', getPost, async (req, res) => {
-//     if (req.body.title != null) {
-//         res.post.title= req.body.title
-//     }
-//     try {
-//         const updatedPost = await res.post.save();
-//         res.json(updatedPost)
-//     } catch (err) {
-//         res.status(400).json({ message: err.message })
-//     }
-// });
+// Update posts
+router.put('/:id', (req, res, next) => {
+    const post = new Post({
+        _id: req.params.id,
+        title: req.body.title,
+        username: req.body.username,
+        img: req.body.img,
+        tags: req.body.tags,
+        plateform: req.body.plateform,
+        productCondition: req.body.productCondition,
+        price: req.body.price
+    });
+    Post.updateOne({_id: req.params.id}, post).then(
+        () => {
+            res.sendStatus(201).json({
+                message: 'Post updated successfully'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.sendStatus(400).json({
+                error: error
+            });
+        }
+    );
+});
 
-/* Delete Post */
-// router.delete('/:id', getPost, async (req, res) => {
-//     try {
-//         await res.post.remove();
-//         res.json({message: 'Deleted Post'})
-//     } catch (err) {
-//         res.status(500).json({message: err.message})
-//     }
-// });
+// Delete posts
+router.delete('/:id', (req, res, next) => {
+   Post.deleteOne({_id: req.params.id}).then(
+       () => {
+           res.sendStatus(200).json({
+               message: 'Post deleted'
+           });
+       }
+   ).catch(
+       (error) => {
+           res.sendStatus(400).json({
+               error:error
+           });
+       }
+   );
+});
+
 
 module.exports = router;
