@@ -15,18 +15,16 @@ var UserSchema = new Schema({
     phone: {type: String},
     bio: {type: String},
 
-    address: {type: String, required: true},
-    city: {type: String, required: true},
-    country: {type: String, required: true},
+    address: {type: String},
+    city: {type: String},
+    country: {type: String},
     geometry: {
         type: {
             type: String,
-            enum: ['Point'],
-            required: true
+            enum: ['Point']
         },
         coordinates: {
-            type: [Number],
-            required: true
+            type: [Number]
         }
     },
 });

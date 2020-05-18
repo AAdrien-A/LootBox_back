@@ -1,14 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var ForumPost = require('../models/ForumPost');
+const express = require('express');
+const router = express.Router();
+const ForumPost = require('../models/ForumPost');
 
-router.get('/', (req, res) => {
+const auth = require('../middleware/auth');
+
+router.get('/', auth, (req, res) => {
     ForumPost.find().sort({createdAt: -1}).populate('user').exec((err, forumPost) => {
         res.render('', {title: '', messages: forumPost});
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
     const forum = new ForumPost({
         user: req.user,
         title: req.body.content,

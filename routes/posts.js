@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var Post = require('../models/Post');
+const express = require('express');
+const router = express.Router();
+const Post = require('../models/Post');
 
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');

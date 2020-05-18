@@ -1,30 +1,30 @@
 require('dotenv').config();
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var sassMiddleware = require('node-sass-middleware');
-var session = require('express-session');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var moment = require('moment');
-var LocalStrategy = require('passport-local').Strategy;
-var MongoStore = require('connect-mongo')(session);
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const sassMiddleware = require('node-sass-middleware');
+const session = require('express-session');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const moment = require('moment');
+const LocalStrategy = require('passport-local').Strategy;
+const MongoStore = require('connect-mongo')(session);
 
-var User = require('./models/User.js');
+const User = require('./models/User.js');
 
 //routes App
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var postsRouter = require('./routes/posts');
-var chatsRouter = require('./routes/chats');
-var forumRouter = require('./routes/forum');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts');
+const chatsRouter = require('./routes/chats');
+const forumRouter = require('./routes/forum');
 
-var app = express();
+const app = express();
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 io.on('connection', socket => {
     socket.on('new-message', message => socket.broadcast.emit('show-message', message));
@@ -39,8 +39,8 @@ app.use((req, res, next) => {
 });
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -98,6 +98,7 @@ app.use(function (err, req, res, next) {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
+    console.log(err);
     res.status(err.status || 500);
     res.render('error');
 });
