@@ -2,19 +2,18 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
 
-const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 const fs = require('fs');
 
 // GET posts
-router.get('/', auth, function (req, res, next) {
+router.get('/', function (req, res, next) {
     Post.find().exec((err, posts) => {
         res.json(posts)
     })
 });
 
 // POST posts
-router.post('/', auth, multer, (req, res) => {
+router.post('/', multer, (req, res) => {
     req.body.post = JSON.parse(req.body.post);
     const url = req.protocol + '://' + req.get('host');
     const post = new Post({
@@ -35,7 +34,7 @@ router.post('/', auth, multer, (req, res) => {
 });
 
 // Update posts
-router.put('/:id', auth, multer, (req, res, next) => {
+router.put('/:id', multer, (req, res, next) => {
     let post = new Post({_id: req.params._id});
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
@@ -82,7 +81,7 @@ router.put('/:id', auth, multer, (req, res, next) => {
 });
 
 // Delete posts
-router.delete('/:id', auth, (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
     Post.findOne({_id: req.params.id}).then(
         (post) => {
             const filename = post.img.split('/images/')[1];

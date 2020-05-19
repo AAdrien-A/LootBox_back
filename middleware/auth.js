@@ -1,18 +1,30 @@
-const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const LocalStrategy = require('passport-local').Strategy;
 
-module.exports = (res, req, next) => {
-    try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-        const userId = decodedToken.userId;
-        if (req.body.userId && req.body.userId !== userId) {
-            throw 'Invalid user ID';
-        } else {
-            next();
+const User = require('../models/User');
+
+passport.use(new JwtStrategy({
+    secretOrKey: 'top_secret',
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+}, (jwt_payload, done) => {
+    return done(null, jwt_payload.user);
+}));
+
+passport.use('login', new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password'
+}, (username, password, done) => {
+    User.findOne({username}, (err, user) => {
+        if (!user) {
+            return done(null, false, {message: 'User not found'});
         }
-    } catch (e) {
-        res.sendStatus(401).json({
-            error: new Error('Invalid request')
+        user.isValidPassword(password, isValid => {
+            if (!isValid) {
+                return done(null, false, {message: 'Wrong Password'});
+            }
+            return done(null, user, {message: 'Logged in Successfully'});
         });
-    }
-};
+    });
+}));

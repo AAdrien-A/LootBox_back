@@ -2,16 +2,18 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 
-var User = require('../models/User');
-
 const userCtrl = require('../controllers/users');
 
 // GET users listing
-router.get('/', function (req, res, next) {
-    res.render('register');
+router.get('/', passport.authenticate('jwt', { session : false }), (req, res, next) => {
+    res.json({
+        message : 'You made it to the secure route',
+        user : req.user,
+        token : req.query.secret_token
+    })
 });
 
 router.post('/', userCtrl.register);
-router.post('/', userCtrl.login);
+router.post('/login', userCtrl.login);
 
 module.exports = router;

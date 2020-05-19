@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -22,33 +23,18 @@ exports.register = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    User.findOne({email: req.body.email}).then(
-        (user) => {
-            if (!user) {
-                return res.sendStatus(401).json({
-                    error: new Error('User not found')
-                });
-            }
-            bcrypt.compare(req.body.password, user.password).then(
-                (valid) => {
-                    if (!valid) {
-                        return res.sendStatus(401).json({
-                            error: new Error('Incorrect password')
-                        });
-                    }
-                    const token = jwt.sign({userId: user._id}, 'RANDOM_TOKEN_SECRET', {expiresIn: '24h'});
-                    res.sendStatus(200).json({
-                        userId: user._id,
-                        token: token
-                    });
-                }
-            ).catch(
-                (error) => {
-                    res.sendStatus(500).json({
-                        error: error
-                    });
-                }
-            );
+    passport.authenticate('login', (err, user, info) => {
+        if (err) return next(err);
+        if (!user) {
+            const error = new Error(info.message);
+            return next(error);
         }
-    );
+        req.login(user, {session: false}, err => {
+            if (err) return next(err);
+            const body = {_id: user._id, username: user.username};
+            const token = jwt.sign({user: body}, 'top_secret');
+            return res.json({token});
+        });
+    })(req, res, next);
 };
+
