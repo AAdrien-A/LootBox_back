@@ -33,7 +33,7 @@ exports.login = (req, res, next) => {
             if (err) return next(err);
             const body = {_id: user._id, username: user.username};
             const token = jwt.sign({user: body}, 'top_secret');
-            return res.json({token});
+            return res.json({token, user});
         });
     })(req, res, next);
 };
