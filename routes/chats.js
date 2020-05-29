@@ -4,7 +4,7 @@ const Message = require('../models/Message');
 
 router.get('/', (req, res) => {
     Message.find().sort({ createdAt: -1 }).populate('User').exec((err, messages) => {
-        res.render('', { title: '', messages: messages });
+        res.json();
     });
 });
 
