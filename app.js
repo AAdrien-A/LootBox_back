@@ -31,12 +31,12 @@ io.on('connection', socket => {
 });
 
 // middleware all requests from all origins to access API.
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-//     next();
-// });
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+});
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -98,6 +98,20 @@ app.use(function (err, req, res, next) {
     console.log(err);
     res.status(err.status || 500);
     res.json('error');
+});
+
+app.use(require('body-parser').json());
+app.use(require('body-parser').urlencoded({ extended: true }));
+app.use((err, req, res, next) => {
+    // This check makes sure this is a JSON parsing issue, but it might be
+    // coming from any middleware, not just body-parser:
+
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        console.error(err);
+        return res.sendStatus(400); // Bad request
+    }
+
+    next();
 });
 
 

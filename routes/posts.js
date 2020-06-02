@@ -14,18 +14,19 @@ router.get('/', function (req, res, next) {
 
 // POST posts
 router.post('/', multer, (req, res) => {
-    req.body.post = JSON.parse(req.body.post);
-    const url = req.protocol + '://' + req.get('host');
+
     const post = new Post({
-        title: req.body.post.title,
-        username: req.body.post.username,
-        img: url + '/images/' + req.file.filename,
-        tags: req.body.post.tags,
-        plateform: req.body.post.plateform,
-        description: req.body.post.description,
-        productCondition: req.body.post.productCondition,
-        price: req.body.post.price,
-        userId: req.body.post.userId
+        title: req.body.title,
+        username: req.body.username,
+        img: req.body.img,
+        tags: {
+            type: 'Categories',
+        },
+        plateform: req.body.plateform,
+        description: req.body.description,
+        productCondition: req.body.productCondition,
+        price: req.body.price,
+        userId: req.body.userId
     });
     post.save((err, newPost) => {
         if (err) return res.json(err);
