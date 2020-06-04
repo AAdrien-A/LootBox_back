@@ -13,8 +13,9 @@ router.post('/', (req, res) => {
         user: req.user,
         title: req.body.content,
         img: req.body.img,
-        tags: req.body.tags,
-        plateform: req.body.plateform,
+        // tags: req.body.tags,
+        mainCategory: req.body.mainCategory,
+        platform: req.body.platform,
         content: req.body.content
     });
     forum.save((err, newForumPost) => {

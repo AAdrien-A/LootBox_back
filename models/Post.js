@@ -5,13 +5,14 @@ var PostSchema = new Schema({
     user: {type: Schema.Types.ObjectID, ref: 'User'},
     title: {type: String, required: true},
     img: {type: String},
-    tags: {
-        type: {
-            type: String,
-            enum: ['Categories'],
-        }
-    },
-    plateform: {type: String},
+    // tags: {
+    //     type: {
+    //         type: String,
+    //         enum: ['Categories'],
+    //     }
+    // },
+    mainCategory: {type: String},
+    platform: {type: String},
     description: {type: String},
     productCondition: {type: String},
     price: {type: Number}
