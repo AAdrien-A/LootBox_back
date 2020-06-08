@@ -12,6 +12,7 @@ const moment = require('moment');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
 const paypal = require('paypal-rest-sdk');
+const keys = require('./keys/keys');
 
 const User = require('./models/User.js');
 
@@ -87,8 +88,8 @@ app.use((req, res, next) => {
 // middleware Paypal
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
-    'client_id': 'AUhxMs3Lu9XteQrnYzqTvdkWXNuK-Oi_gQXOKYW1S9hw15VhrB2MImWJXXcN11qV1j8-IwBt15EzgEbk',
-    'client_secret': 'EJzs9R8tUPA8dMeHd5x9Bq3NlJrZYtgwrfp6ilz9xP1DErmcUSQr3iJuVOwhakgM4ySxQl46wfXkNjjM'
+    'client_id': keys.paypal.clientId,
+    'client_secret': keys.paypal.clientSecret,
 });
 
 // app.get("/", (req, res) => {
