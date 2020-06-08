@@ -11,6 +11,7 @@ const passport = require('passport');
 const moment = require('moment');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
+const paypal = require('paypal-rest-sdk');
 
 const User = require('./models/User.js');
 
@@ -23,12 +24,19 @@ const forumRouter = require('./routes/forum');
 
 const app = express();
 
+// views for Paypal
+app.engine('pug', require('pug').__express);
+app.set("views", path.join(__dirname, 'views'));
+app.set("view engine", "pug");
+
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 io.on('connection', socket => {
     socket.on('new-message', message => socket.broadcast.emit('show-message', message));
 });
+
+server.listen(5000);
 
 // middleware all requests from all origins to access API.
 app.use((req, res, next) => {
@@ -76,12 +84,93 @@ app.use((req, res, next) => {
     next();
 });
 
+// middleware Paypal
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AUhxMs3Lu9XteQrnYzqTvdkWXNuK-Oi_gQXOKYW1S9hw15VhrB2MImWJXXcN11qV1j8-IwBt15EzgEbk',
+    'client_secret': 'EJzs9R8tUPA8dMeHd5x9Bq3NlJrZYtgwrfp6ilz9xP1DErmcUSQr3iJuVOwhakgM4ySxQl46wfXkNjjM'
+});
+
+// app.get("/", (req, res) => {
+//     res.render("index");
+// });
+
+app.get('/paypal', (req, res) => {
+    var create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:4000/success",
+            "cancel_url": "http://localhost:4000/cancel"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "item",
+                    "sku": "item",
+                    "price": "1.00",
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "currency": "USD",
+                "total": "1.00"
+            },
+            "description": "This is the payment description."
+        }]
+    };
+
+    paypal.payment.create(create_payment_json, function (error, payment) {
+        if (error) {
+            throw error;
+        } else {
+            console.log("Create Payment Response");
+            console.log(payment);
+            res.redirect(payment.links[1].href)
+        }
+    });
+});
+
+app.get('/success', (req, res) => {
+    var PayerID = req.query.PayerID;
+    var paymentId = req.query.paymentId;
+    var execute_payment_json = {
+        "payer_id": PayerID,
+        "transactions": [{
+            "amount": {
+                "currency": "USD",
+                "total": "1.00"
+            }
+        }]
+    };
+
+    paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+        if (error) {
+            console.log(error.response);
+            throw error;
+        } else {
+            console.log("Get Payment Response");
+            console.log(JSON.stringify(payment));
+            res.render('success');
+        }
+    });
+});
+
+app.get('/cancel', (req, res) => {
+    res.render('cancel');
+});
+
+
 // used routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/chats', chatsRouter);
 app.use('/forum', forumRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -101,7 +190,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.use(require('body-parser').json());
-app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('body-parser').urlencoded({extended: true}));
 app.use((err, req, res, next) => {
     // This check makes sure this is a JSON parsing issue, but it might be
     // coming from any middleware, not just body-parser:
