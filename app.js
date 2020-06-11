@@ -92,10 +92,6 @@ paypal.configure({
     'client_secret': keys.paypal.clientSecret,
 });
 
-// app.get("/", (req, res) => {
-//     res.render("index");
-// });
-
 app.get('/paypal', (req, res) => {
     var create_payment_json = {
         "intent": "sale",

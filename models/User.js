@@ -28,6 +28,7 @@ var UserSchema = new Schema({
             type: [Number]
         }
     },
+    post: {type: Schema.Types.ObjectId, ref: 'Post'}
 });
 
 UserSchema.plugin(passportLocalMongoose);

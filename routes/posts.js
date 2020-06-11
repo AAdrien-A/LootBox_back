@@ -7,27 +7,22 @@ const fs = require('fs');
 
 // GET posts
 router.get('/', function (req, res, next) {
-    Post.find().exec((err, posts) => {
+    Post.find().populate('user').exec((err, posts) => {
         res.json(posts)
     })
 });
 
 // POST posts
 router.post('/', multer, (req, res) => {
-
     const post = new Post({
         title: req.body.title,
-        username: req.body.username,
+        user: req.user,
         img: req.body.img,
-        // tags: {
-        //     type: 'Categories',
-        // },
         mainCategory: req.body.mainCategory,
         platform: req.body.platform,
         description: req.body.description,
         productCondition: req.body.productCondition,
         price: req.body.price,
-        userId: req.body.userId
     });
     post.save((err, newPost) => {
         if (err) return res.json(err);

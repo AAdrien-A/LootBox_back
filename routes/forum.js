@@ -4,7 +4,7 @@ const ForumPost = require('../models/ForumPost');
 
 router.get('/', (req, res) => {
     ForumPost.find().sort({createdAt: -1}).populate('user').exec((err, forumPost) => {
-        res.json('', {title: '', messages: forumPost});
+        res.json();
     });
 });
 

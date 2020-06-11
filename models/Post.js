@@ -2,15 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
-    user: {type: Schema.Types.ObjectID, ref: 'User'},
     title: {type: String, required: true},
+    user: {type: Schema.Types.ObjectId, ref: 'User'},
     img: {type: String},
-    // tags: {
-    //     type: {
-    //         type: String,
-    //         enum: ['Categories'],
-    //     }
-    // },
     mainCategory: {type: String},
     platform: {type: String},
     description: {type: String},
