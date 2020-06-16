@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
+const passport = require('passport');
 
 const multer = require('../middleware/multer-config');
 const fs = require('fs');
@@ -13,7 +14,7 @@ router.get('/', function (req, res, next) {
 });
 
 // POST posts
-router.post('/', multer, (req, res) => {
+router.post('/', multer, passport.authenticate('jwt', { session : false }), (req, res) => {
     const post = new Post({
         title: req.body.title,
         user: req.user,

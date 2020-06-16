@@ -33,6 +33,7 @@ router.put('/users/:id', (req, res, next, err) => {
         latitude: req.body.latitude,
         longitude: req.body.longitude,
     });
+    // placer les elements en params a la suite de req.params.id
     User.updateOne({_id: req.params.id}, user).then(() => {
         if (err) return res.json(err);
         res.json(User);
