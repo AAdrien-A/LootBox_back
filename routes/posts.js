@@ -32,7 +32,7 @@ router.post('/', multer, passport.authenticate('jwt', { session : false }), (req
 });
 
 // Update posts
-router.put('/:id', multer, (req, res, next) => {
+router.put('/:id', multer, passport.authenticate('jwt', { session : false }), (req, res, next) => {
     let post = new Post({_id: req.params._id});
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
@@ -81,7 +81,7 @@ router.put('/:id', multer, (req, res, next) => {
 });
 
 // Delete posts
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', passport.authenticate('jwt', { session : false }), (req, res, next) => {
     Post.findOne({_id: req.params.id}).then(
         (post) => {
             const filename = post.img.split('/images/')[1];

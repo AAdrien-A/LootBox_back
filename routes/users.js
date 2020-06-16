@@ -19,7 +19,7 @@ router.post('/', userCtrl.register);
 router.post('/login', userCtrl.login);
 
 // Updating One
-router.put('/users/:id', (req, res, next, err) => {
+router.put('/users/:id', passport.authenticate('jwt', { session : false }), (req, res, next, err) => {
     const user = new User({
         _id: req.params.id,
         img: req.body.img,

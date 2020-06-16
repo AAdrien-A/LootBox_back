@@ -21,7 +21,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
 const chatsRouter = require('./routes/chats');
-const forumRouter = require('./routes/forum');
+const forumRouter = require('./routes/forumPosts');
 
 const app = express();
 
@@ -166,7 +166,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/chats', chatsRouter);
-app.use('/forum', forumRouter);
+app.use('/forumPosts', forumRouter);
 
 
 // catch 404 and forward to error handler

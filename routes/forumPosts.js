@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const ForumPost = require('../models/ForumPost');
 
 router.get('/', (req, res) => {
-    ForumPost.find().sort({createdAt: -1}).populate('user').exec((err, forumPost) => {
-        res.json();
+    ForumPost.find().sort({createdAt: -1}).populate('user').exec((err, forumPosts) => {
+        res.json(forumPosts);
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/', passport.authenticate('jwt', { session : false }), (req, res) => {
     const forum = new ForumPost({
         user: req.user,
         title: req.body.content,
